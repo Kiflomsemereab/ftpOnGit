@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4eead5f3-7e60-4f20-a28c-5c6fdd7f1e3a" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<ftp:config name="FTP_Config" doc:name="FTP Config" doc:id="5e11842f-8873-4629-a16b-c2901eab98d8" >
+		<ftp:connection host="${FTP.Hostname}" port="${FTP.Port}" username="${FTP.Username}" password="${FTP.Password}"/>
+	</ftp:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="a0f6bb4a-d586-47cd-b86c-057138df9d6d" file="secure.properties" />
+	<file:config name="File_Config" doc:name="File Config" doc:id="5c89538d-3a91-421b-8ac7-650add6a504b" />
+	<flow name="ftpcicd-apiFlow" doc:id="4dc826cd-bb59-49c0-9c48-893d1c3b0d0a" >
+		<http:listener doc:name="Listener" doc:id="96b976b4-e646-4bc9-859a-9a8ade5961e9" config-ref="HTTP_Listener_config" path="/ftpcicd"/>
+		<ftp:read doc:name="Read" doc:id="0c546f28-9713-4b35-b2b6-9781dd280cd4" config-ref="FTP_Config" path="/htdocs/kifu/training/dataFromSalesforce.json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="5dee5533-ac12-410f-bdb0-45683ea1831d" message="#[payload]"/>
+		<file:write doc:name="Write" doc:id="10adf1dc-e0bb-45ac-8362-fed96b74ec0d" config-ref="File_Config" path="D:\training\salseforce\importFromFTP\salseforceData.json"/>
+	</flow>
+</mule>
